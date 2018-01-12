@@ -54,6 +54,7 @@ class App extends Component {
       questionTypes: [],
     };
 
+    this.onChooseResponse = this.onChooseResponse.bind(this);
     this.questionBuilder = this.questionBuilder.bind(this);
     this.setQuestionData = this.setQuestionData.bind(this);
     this.possibleQuestionTypesGen = this.possibleQuestionTypesGen.bind(this);
@@ -79,13 +80,11 @@ class App extends Component {
   setQuestionData(result){
     // Runs after mounting
     this.setState({product: result.product});
-    console.log("product from state", this.state.product);
 
     let questionTypes = this.possibleQuestionTypesGen(this.state.product);
     let randomQuestionIdx = randomSelect(questionTypes.length);
 
     this.questionBuilder(this.state.product, questionTypes[randomQuestionIdx]);
-    console.log(questionTypes);
     // this.setState({questionTypes: questionTypes});
   }
 
@@ -102,7 +101,7 @@ class App extends Component {
         }        
         break;
       case "protein":
-        questionText = "How many grams of protein? (Recommended is 56 g for men, 46 for women)";  
+        questionText = "How many grams of protein in a single serving? (Remember: Recommended is 56 g for men, 46 for women)";  
         questionAnswer = data.nutriments.proteins_serving;
         questionChoices.push(questionAnswer);
         questionChoices.push(questionAnswer + 5);
@@ -110,7 +109,7 @@ class App extends Component {
         questionChoices.push(Math.floor(parseFloat(questionAnswer) / 2) + 15); 
         break;
       case "sugar":
-        questionText = "How much sugar? (Recommended is 38g for men, 25g for women)";
+        questionText = "How many grams of sugar in a single serving? (Remember: Recommended is 38g for men, 25g for women)";
         questionAnswer = data.nutriments.sugars_serving; 
         questionChoices.push(questionAnswer);
         questionChoices.push(questionAnswer + 5);
@@ -118,7 +117,7 @@ class App extends Component {
         questionChoices.push(Math.floor(parseFloat(questionAnswer) / 2) + 15);
         break;
       case "salt":
-        questionText = "How many milligrams of salt? (Recommended is less than 2400 mg per day!)";
+        questionText = "How many milligrams of salt in a single serving? (Remember:   Recommended is less than 2400 mg per day!)";
         questionAnswer = data.nutriments.sodium_value; 
         questionChoices.push(questionAnswer);
         questionChoices.push(questionAnswer + 5);
@@ -127,7 +126,6 @@ class App extends Component {
         break;
     }
 
-    console.log(questionAnswer);
     let shuffledChoices = shuffle(questionChoices);
 
     this.setState({
@@ -138,22 +136,6 @@ class App extends Component {
       
   }
 
-  // questionGenerator(data){
-
-  //   this.setState({questionText: "What is the main ingredient?"});
-    
-  //   let questionChoices = [];
-  //   for(let i = 0; i < 4; i++){
-  //     console.log("running");
-  //     questionChoices.push(data.ingredients[i].text.toLowerCase());
-  //   }
-  //   let shuffledQuestionChoices = shuffle(questionChoices);
-  //   this.setState({questionChoices: shuffledQuestionChoices});
-
-  //   let questionAnswer = data.ingredients[0].text;
-  //   this.setState({questionAnswer: questionAnswer});
-
-  // }
 
   possibleQuestionTypesGen(product){
     console.log("running");
@@ -172,6 +154,14 @@ class App extends Component {
     }
 
     return types;
+  }
+
+  onChooseResponse(choice){
+    if(choice === this.state.questionAnswer){
+      console.log("Correct");
+    } else {
+      console.log("WRONG");
+    }
   }
 
   componentDidMount(){
@@ -205,7 +195,10 @@ class App extends Component {
           <h3>{questionText}</h3> 
           {questionChoices.map(choice =>
             <div key={choice}>
-              <p>{choice}</p>
+              <button 
+                onClick={() => this.onChooseResponse(choice)}
+                >{choice}
+              </button>
             </div>
           )}
       </div>
