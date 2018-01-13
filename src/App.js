@@ -52,6 +52,8 @@ class App extends Component {
       questionAnswer: null,
       questionChoices: [],
       questionTypes: [],
+      score: 0,
+      correctResponse: null,
     };
 
     this.onChooseResponse = this.onChooseResponse.bind(this);
@@ -95,7 +97,7 @@ class App extends Component {
     switch(type){
       case "ingredients":
         questionText = "What's the main ingredient?";
-        questionAnswer = data.ingredients[0].text;
+        questionAnswer = data.ingredients[0].text.toLowerCase();
         for(let i = 0; i < 4; i++){
           questionChoices.push(data.ingredients[i].text.toLowerCase());
         }        
@@ -157,11 +159,17 @@ class App extends Component {
   }
 
   onChooseResponse(choice){
-    if(choice === this.state.questionAnswer){
-      console.log("Correct");
-    } else {
-      console.log("WRONG");
+    console.log(choice, this.state.questionAnswer);
+    if(!this.state.correctResponse){
+      if(choice === this.state.questionAnswer){
+          this.setState({score: this.state.score + 1});
+          this.setState({correctResponse: 1});
+      } else {
+        this.setState({correctResponse: 2});
+        console.log(this.state.score);
+      }
     }
+
   }
 
   componentDidMount(){
@@ -176,32 +184,48 @@ class App extends Component {
     const questions = this.state.questions;
     const questionText = this.state.questionText;
     const questionChoices = this.state.questionChoices;
+    const correctResponse = this.state.correctResponse;
+    const questionAnswer = this.state.questionAnswer;
 
     return (
       <div className="App">
-      <div>
-        {product ? 
-          <div className="product">
-            <h2>{product.product_name}</h2>
-            <img 
-              src={product.image_small_url}
-              alt={product.product_name} 
-            />
-          </div>
-          : <p>Loading...</p>
-        }
-      </div>
-      <div className="questions">
-          <h3>{questionText}</h3> 
-          {questionChoices.map(choice =>
-            <div key={choice}>
-              <button 
-                onClick={() => this.onChooseResponse(choice)}
-                >{choice}
-              </button>
+        <div className="score">
+          <h4>Current Score: {this.state.score}</h4>
+        </div>
+        <div>
+          {product ? 
+            <div className="product">
+              <h2>{product.product_name}</h2>
+              <img 
+                src={product.image_small_url}
+                alt={product.product_name} 
+              />
             </div>
-          )}
-      </div>
+            : <p>Loading...</p>
+          }
+        </div>
+        <div className="questions">
+            <h3>{questionText}</h3> 
+            {questionChoices.map(choice =>
+              <div key={choice}>
+                <button 
+                  
+                  onClick={() => this.onChooseResponse(choice)}
+                  >{choice}
+                </button>
+              </div>
+            )}
+        </div>
+        <div className="feedback">
+          { correctResponse ? 
+            ( correctResponse === 1 ? 
+              <p>Good job!</p>
+              :
+              <p>WRONG</p>
+            ) :
+            <p>Awaiting result</p>
+          }
+        </div>
       </div>
     );
   }
