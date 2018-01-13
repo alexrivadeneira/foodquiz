@@ -56,6 +56,7 @@ class App extends Component {
       correctResponse: null,
     };
 
+    this.nextQuestion = this.nextQuestion.bind(this);
     this.onChooseResponse = this.onChooseResponse.bind(this);
     this.questionBuilder = this.questionBuilder.bind(this);
     this.setQuestionData = this.setQuestionData.bind(this);
@@ -138,6 +139,11 @@ class App extends Component {
       
   }
 
+  nextQuestion(){
+    //update/reset various state items
+    let randomIdx = randomSelect(productBarcodes.length);
+    this.fetchProductData(productBarcodes[randomIdx]);
+  }
 
   possibleQuestionTypesGen(product){
     console.log("running");
@@ -219,9 +225,19 @@ class App extends Component {
         <div className="feedback">
           { correctResponse ? 
             ( correctResponse === 1 ? 
-              <p>Good job!</p>
+              <div>
+                <p>Good job!</p>
+                <button
+                  onClick={ ()=> this.nextQuestion() }
+                >Next</button>                
+              </div>
               :
-              <p>WRONG</p>
+              <div>
+                <p>WRONG</p>
+                <button
+                  onClick={ ()=> this.nextQuestion() }
+                >Next</button> 
+              </div>             
             ) :
             <p>Awaiting result</p>
           }

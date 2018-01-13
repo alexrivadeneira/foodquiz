@@ -17,6 +17,11 @@ cursor: pointer;
 width: 25%;
 }
 
+.questions{
+	width: 70%;
+	margin: 0 auto;
+	position: relative;
+}
 button.correct{
 	color: #fff;
 	background: #bada55;
