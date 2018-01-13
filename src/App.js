@@ -195,8 +195,9 @@ class App extends Component {
         <div>
           {product ? 
             <div className="product">
-              <h2>{product.product_name}</h2>
+              <h3>{product.product_name}</h3>
               <img 
+                className="productImg"
                 src={product.image_small_url}
                 alt={product.product_name} 
               />
@@ -205,11 +206,10 @@ class App extends Component {
           }
         </div>
         <div className="questions">
-            <h3>{questionText}</h3> 
+            <p>{questionText}</p> 
             {questionChoices.map(choice =>
               <div key={choice}>
                 <button 
-                  
                   onClick={() => this.onChooseResponse(choice)}
                   >{choice}
                 </button>
