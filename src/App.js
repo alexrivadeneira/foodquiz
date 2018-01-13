@@ -143,6 +143,7 @@ class App extends Component {
     //update/reset various state items
     let randomIdx = randomSelect(productBarcodes.length);
     this.fetchProductData(productBarcodes[randomIdx]);
+    this.setState({correctResponse: null});
   }
 
   possibleQuestionTypesGen(product){
