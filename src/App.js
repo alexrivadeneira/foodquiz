@@ -94,7 +94,7 @@ class App extends Component {
   questionBuilder(data, type){
     // update this to throw errors in case data isn't here
     let questionText, questionAnswer;
-    let questionChoices = [];    
+    let questionChoices = null;    
     switch(type){
       case "ingredients":
         questionText = "What's the main ingredient?";
@@ -106,26 +106,17 @@ class App extends Component {
       case "protein":
         questionText = "How many grams of protein in a single serving? (Remember: Recommended is 56 g for men, 46 for women)";  
         questionAnswer = data.nutriments.proteins_serving;
-        questionChoices.push(questionAnswer);
-        questionChoices.push(questionAnswer + 5);
-        questionChoices.push(questionAnswer +10);
-        questionChoices.push(Math.floor(parseFloat(questionAnswer) / 2) + 15); 
+        questionChoices = genDistractors(questionAnswer);         
         break;
       case "sugar":
         questionText = "How many grams of sugar in a single serving? (Remember: Recommended is 38g for men, 25g for women)";
         questionAnswer = data.nutriments.sugars_serving; 
-        questionChoices.push(questionAnswer);
-        questionChoices.push(questionAnswer + 5);
-        questionChoices.push(questionAnswer +10);
-        questionChoices.push(Math.floor(parseFloat(questionAnswer) / 2) + 15);
+        questionChoices = genDistractors(questionAnswer);
         break;
       case "salt":
         questionText = "How many milligrams of salt in a single serving? (Remember:   Recommended is less than 2400 mg per day!)";
         questionAnswer = data.nutriments.sodium_value; 
-        questionChoices.push(questionAnswer);
-        questionChoices.push(questionAnswer + 5);
-        questionChoices.push(questionAnswer +10);
-        questionChoices.push(Math.floor(parseFloat(questionAnswer) / 2) + 15 );        
+        questionChoices = genDistractors(questionAnswer);        
         break;
     }
 
@@ -270,5 +261,38 @@ function randomSelect(num){
 function sodiumPercentage(g){
   let mg = parseFloat(g) * 1000;
   return Math.floor(parseFloat(mg) / 2300);
+}
+
+function genDistractors(questionAnswer){
+  let questionChoices = [];
+  questionChoices.push(questionAnswer);
+  
+  let val = [2,3,5,10,100];
+  let modifier = ["add", "sub", "mult", "mult", "mult", "mult", "div", "div"];
+
+  while(questionChoices.length < 4){
+    let newdistractor = mod(questionAnswer, val[randomSelect(val.length - 1)], modifier[randomSelect(modifier.length - 1)]);
+    console.log("NEWDIS", newdistractor);
+    if(!questionChoices.includes(newdistractor)){
+      questionChoices.push(newdistractor);
+    }
+  }
+
+  return questionChoices;
+
+  function mod(start, val, dir){
+    switch(dir){
+      case "add":
+        return start + val;
+      case "sub":
+        return start - val;
+      case "mult":
+        return start * val;
+      case "div":
+        return Math.floor(parseFloat(start) / val);
+    }
+  }
+
+  
 }
 export default App;
