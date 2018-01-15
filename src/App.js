@@ -141,8 +141,12 @@ class App extends Component {
 
   nextQuestion(){
     //update/reset various state items
-    let randomIdx = randomSelect(productBarcodes.length);
-    this.fetchProductData(productBarcodes[randomIdx]);
+    shuffle(productBarcodes);
+    // let randomIdx = randomSelect(productBarcodes.length);
+    this.fetchProductData(productBarcodes[productBarcodes.length - 1]);
+    productBarcodes.pop();
+    console.log(productBarcodes);
+
     this.setState({correctResponse: null});
   }
 
