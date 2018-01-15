@@ -274,7 +274,7 @@ function genDistractors(questionAnswer){
     let newdistractor = mod(questionAnswer, val[randomSelect(val.length - 1)], modifier[randomSelect(modifier.length - 1)]);
     console.log("NEWDIS", newdistractor);
     if(!questionChoices.includes(newdistractor)){
-      questionChoices.push(newdistractor);
+      questionChoices.push(newdistractor);  
     }
   }
 
