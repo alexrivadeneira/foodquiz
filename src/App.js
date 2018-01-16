@@ -124,6 +124,8 @@ class App extends Component {
     let randomProduct = this.chooseRandomProduct();
     this.fetchProductData(randomProduct);
     this.removeLastProduct();
+    this.setState({correctResponse: null});
+    
   }
 
   chooseRandomProduct(){
