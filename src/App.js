@@ -96,29 +96,34 @@ class App extends Component {
   questionBuilder(data, type){
     // update this to throw errors in case data isn't here
     let questionText, questionAnswer;
-    let questionChoices = null;    
+    let questionChoices = [];    
     switch(type){
       case "ingredients":
+      console.log("ingredient Q");
         questionText = "What's the main ingredient?";
         questionAnswer = data.ingredients[0].text.toLowerCase();
         for(let i = 0; i < 4; i++){
           questionChoices.push(data.ingredients[i].text.toLowerCase());
         }        
+        this.setState({questionAnswer: questionAnswer});
         break;
       case "protein":
         questionText = "How many grams of protein in a single serving? (Remember: Recommended is 56 g for men, 46 for women)";  
         questionAnswer = data.nutriments.proteins_serving;
-        questionChoices = genDistractors(questionAnswer);         
+        questionChoices = genDistractors(questionAnswer);  
+        this.setState({questionAnswer: parseInt(questionAnswer, 10)});   
         break;
       case "sugar":
         questionText = "How many grams of sugar in a single serving? (Remember: Recommended is 38g for men, 25g for women)";
         questionAnswer = data.nutriments.sugars_serving; 
         questionChoices = genDistractors(questionAnswer);
+        this.setState({questionAnswer: parseInt(questionAnswer, 10)});
         break;
       case "salt":
         questionText = "How many milligrams of salt in a single serving? (Remember:   Recommended is less than 2400 mg per day!)";
         questionAnswer = data.nutriments.sodium_value; 
-        questionChoices = genDistractors(questionAnswer);        
+        questionChoices = genDistractors(questionAnswer);  
+        this.setState({questionAnswer: parseInt(questionAnswer, 10)});      
         break;
       default:
       //
@@ -127,7 +132,6 @@ class App extends Component {
 
     this.setState({
       questionText: questionText,
-      questionAnswer: parseInt(questionAnswer, 10),
       questionChoices: questionChoices, 
     })
       
@@ -184,7 +188,6 @@ class App extends Component {
   }
 
   componentDidMount(){
-    const {product} = this.state;
     let randomIdx = randomSelect(productBarcodes.length);
     this.fetchProductData(productBarcodes[randomIdx]);
 
@@ -192,12 +195,9 @@ class App extends Component {
 
   render() {
     const product = this.state.product;
-    const questions = this.state.questions;
     const questionText = this.state.questionText;
     const questionChoices = this.state.questionChoices;
     const correctResponse = this.state.correctResponse;
-    const questionsAttempted = this.state.questionsAttempted;
-    const questionAnswer = this.state.questionAnswer;
     const endGame = this.state.endGame;
 
     return (
@@ -208,7 +208,7 @@ class App extends Component {
           </div>
         }
 
-        
+
         <div>
           {product ? 
             <div className="product">
@@ -272,10 +272,7 @@ function randomSelect(num){
   return Math.floor(Math.random() * num);
 }
 
-function sodiumPercentage(g){
-  let mg = parseFloat(g) * 1000;
-  return Math.floor(parseFloat(mg) / 2300);
-}
+
 
 function genDistractors(questionAnswer){
   let questionChoices = [];
