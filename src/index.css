@@ -33,3 +33,7 @@ button:hover { color: #222;
 *:focus { outline: none;
 }
 
+.legal{
+	font-size: 10px;
+}
+

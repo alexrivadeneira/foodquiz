@@ -22,10 +22,9 @@ let barcodes = [
 
 const URL_BASE = 'https://world.openfoodfacts.org/api/v0/product/';
 const URL_SUFF = '.json';
-const QUIZ_LENGTH = 2;
+const QUIZ_LENGTH = 10;
 
 class App extends Component {
-
 
   constructor(props){
     super(props);
@@ -83,7 +82,6 @@ class App extends Component {
     this.nextQuestion();
   }
 
-
   questionBuilder(data, type){
     // update this to throw errors in case data isn't here
     let questionText, questionAnswer;
@@ -98,19 +96,19 @@ class App extends Component {
         this.setState({questionAnswer: questionAnswer});
         break;
       case "protein":
-        questionText = "How many grams of protein in a single serving? (Remember: Recommended is 56 g for men, 46 for women)";  
+        questionText = "How many grams of protein in a single serving? (Remember: Recommended daily intake is 56g for men, 46g for women)";  
         questionAnswer = data.nutriments.proteins_serving;
         questionChoices = genDistractors(questionAnswer);  
         this.setState({questionAnswer: parseInt(questionAnswer, 10)});   
         break;
       case "sugar":
-        questionText = "How many grams of sugar in a single serving? (Remember: Recommended is 38g for men, 25g for women)";
+        questionText = "How many grams of sugar in a single serving? According to the American Heart Association, the recommended daily intake is max 150 calories per day (37.5g or 9 teaspoons) for men, max 100 calories per day (25g or 6 teaspoons) for women.";
         questionAnswer = data.nutriments.sugars_serving; 
         questionChoices = genDistractors(questionAnswer);
         this.setState({questionAnswer: parseInt(questionAnswer, 10)});
         break;
       case "salt":
-        questionText = "How many milligrams of salt in a single serving? (Remember:   Recommended is less than 2400 mg per day!)";
+        questionText = "How many milligrams of salt in a single serving? The American Heart Association recommends no more than 2300mg a day and an ideal limit of no more than 1500mg per day for most adults. 2300mg is just about one teaspoon of salt.";
         questionAnswer = data.nutriments.sodium_value; 
         questionChoices = genDistractors(questionAnswer);  
         this.setState({questionAnswer: parseInt(questionAnswer, 10)});      
@@ -264,6 +262,9 @@ class App extends Component {
           </div>
         </div>
         }
+        <div className="legal">
+        <p>The food products data and pictures come from the collaborative, free and open <a href="http://openfoodfacts.org/" target="_blank">Open Food Facts</a> database. The data is available under the licence Open Database License and the photos are licensed under the licence Creative Commons Attribution Share-Alike.</p>
+        </div>
       </div>
     );
   }
@@ -284,8 +285,6 @@ function randomSelect(num){
   return Math.floor(Math.random() * num);
 }
 
-
-
 function genDistractors(questionAnswer){
   let questionChoices = [];
   questionChoices.push(parseInt(questionAnswer, 10));
@@ -303,7 +302,6 @@ function genDistractors(questionAnswer){
     }
 
   }
-
   return questionChoices;
 
   function mod(start, val, dir){
@@ -320,7 +318,6 @@ function genDistractors(questionAnswer){
         //
     }
   }
-
   
 }
 export default App;
