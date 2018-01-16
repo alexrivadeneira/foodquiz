@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 
-
 let productBarcodes = [
 "0016000275713",
 "0051000012517",
@@ -21,23 +20,6 @@ let productBarcodes = [
 "0085239042311",
 ];
 
-// let questions = [
-// { id: 0
-  // questionText: "text",
-//   data: "ingredients[0].id",
-//   answer: "answer",
-//   choices: ["item1", "item2", "item3", "item4"],
-// }
-
-// "What is the main ingredient?",
-// "What is the percentage daily value in one serving of sodium?",
-// "What is the percentage daily value in one serving of fiber?",
-// "What is the percentage daily value in one serving of sugar?",
-// ];
-
-
-
-
 const URL_BASE = 'https://world.openfoodfacts.org/api/v0/product/';
 const URL_SUFF = '.json';
 
@@ -56,15 +38,16 @@ class App extends Component {
       correctResponse: null,
       endGame: false,
       questionsAttempted: 0,
+      quizLength: 2,
     };
 
+    this.resetQuiz = this.resetQuiz.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
     this.onChooseResponse = this.onChooseResponse.bind(this);
     this.questionBuilder = this.questionBuilder.bind(this);
     this.setQuestionData = this.setQuestionData.bind(this);
     this.possibleQuestionTypesGen = this.possibleQuestionTypesGen.bind(this);
     this.fetchProductData = this.fetchProductData.bind(this);
-    // this.questionGenerator = this.questionGenerator.bind(this);
   }
 
   fetchProductData(number){
@@ -75,22 +58,16 @@ class App extends Component {
       .catch(e => e);
   }
 
-  // setProductData(result){
-  //   // console.log("result1: ", result);
-  //   this.setState({product: result.product});
-  //   console.log("result2:", result.product);
-  //   this.questionGenerator(this.state.product);
-  // }
-
   setQuestionData(result){
     // Runs after mounting
     this.setState({product: result.product});
-
     let questionTypes = this.possibleQuestionTypesGen(this.state.product);
     let randomQuestionIdx = randomSelect(questionTypes.length);
-
     this.questionBuilder(this.state.product, questionTypes[randomQuestionIdx]);
-    // this.setState({questionTypes: questionTypes});
+  }
+
+  resetQuiz(){
+    console.log("Resetting");
   }
 
   questionBuilder(data, type){
@@ -99,7 +76,6 @@ class App extends Component {
     let questionChoices = [];    
     switch(type){
       case "ingredients":
-      console.log("ingredient Q");
         questionText = "What's the main ingredient?";
         questionAnswer = data.ingredients[0].text.toLowerCase();
         for(let i = 0; i < 4; i++){
@@ -129,7 +105,6 @@ class App extends Component {
       //
     }
 
-
     this.setState({
       questionText: questionText,
       questionChoices: questionChoices, 
@@ -143,13 +118,10 @@ class App extends Component {
     // let randomIdx = randomSelect(productBarcodes.length);
     this.fetchProductData(productBarcodes[productBarcodes.length - 1]);
     productBarcodes.pop();
-    console.log(productBarcodes);
-
     this.setState({correctResponse: null});
   }
 
   possibleQuestionTypesGen(product){
-    console.log("running");
     let types = [];
     if(product.ingredients.length >= 4){
       types.push("ingredients");
@@ -169,7 +141,7 @@ class App extends Component {
 
   onChooseResponse(choice){
     console.log(choice, this.state.questionAnswer);
-    if(!this.state.correctResponse){
+    if(!this.state.correctResponse && !this.state.endGame){
       if(choice === this.state.questionAnswer){
           this.setState({score: this.state.score + 1});
           this.setState({correctResponse: 1});
@@ -178,19 +150,18 @@ class App extends Component {
         console.log(this.state.score);
       }
       let questionsAttempted = this.state.questionsAttempted + 1;
-      this.setState({questionsAttempted: questionsAttempted});
-      if(this.state.questionsAttempted > 3){
+      if(questionsAttempted > this.state.quizLength){
         this.setState({endGame: true});
       }
+      this.setState({questionsAttempted: questionsAttempted});
+
       console.log("ATTEMPT:", questionsAttempted);
     }
-
   }
 
   componentDidMount(){
     let randomIdx = randomSelect(productBarcodes.length);
     this.fetchProductData(productBarcodes[randomIdx]);
-
   }
 
   render() {
@@ -202,56 +173,65 @@ class App extends Component {
 
     return (
       <div className="App">
-        { endGame &&
-          <div className="endgame">
-            <h2>You got {correctResponse} out of 10 questions correct!</h2>
-          </div>
-        }
-
-
         <div>
-          {product ? 
-            <div className="product">
-              <h3>{product.product_name}</h3>
-              <img 
-                className="productImg"
-                src={product.image_small_url}
-                alt={product.product_name} 
-              />
+          { endGame &&
+            <div className="endgame">
+              <h2>You got {correctResponse} out of 10 questions correct!</h2>
+              <button
+                onClick = {() => this.resetQuiz()}
+              >Retake the Quiz
+              </button>
             </div>
-            : <p>Loading...</p>
           }
         </div>
-        <div className="questions">
-            <p>{questionText}</p> 
-            {questionChoices.map(choice =>
-              <div key={choice}>
-                <button 
-                  onClick={() => this.onChooseResponse(choice)}
-                  >{choice}
-                </button>
+
+        {!endGame &&
+        <div>
+          <div>
+            {product ? 
+              <div className="product">
+                <h3>{product.product_name}</h3>
+                <img 
+                  className="productImg"
+                  src={product.image_small_url}
+                  alt={product.product_name} 
+                />
               </div>
-            )}
+              : <p>Loading...</p>
+            }
+          </div>
+          <div className="questions">
+              <p>{questionText}</p> 
+              {questionChoices.map(choice =>
+                <div key={choice}>
+                  <button 
+                    onClick={() => this.onChooseResponse(choice)}
+                    >{choice}
+                  </button>
+                </div>
+              )}
+          </div>
+          <div className="feedback">
+            { correctResponse ? 
+              ( correctResponse === 1 ? 
+                <div>
+                  <p>Good job!</p>
+                  <button
+                    onClick={ ()=> this.nextQuestion() }
+                  >Next</button>                
+                </div>
+                :
+                <div>
+                  <p>WRONG</p>
+                  <button
+                    onClick={ ()=> this.nextQuestion() }
+                  >Next</button> 
+                </div>             
+              ) : <p></p>
+            }
+          </div>
         </div>
-        <div className="feedback">
-          { correctResponse ? 
-            ( correctResponse === 1 ? 
-              <div>
-                <p>Good job!</p>
-                <button
-                  onClick={ ()=> this.nextQuestion() }
-                >Next</button>                
-              </div>
-              :
-              <div>
-                <p>WRONG</p>
-                <button
-                  onClick={ ()=> this.nextQuestion() }
-                >Next</button> 
-              </div>             
-            ) : <p></p>
-          }
-        </div>
+        }
       </div>
     );
   }
@@ -284,7 +264,6 @@ function genDistractors(questionAnswer){
   while(questionChoices.length < 4){
 
     let newdistractor = mod(questionAnswer, val[randomSelect(val.length - 1)], modifier[randomSelect(modifier.length - 1)]);
-    console.log("NEWDIS", newdistractor);
     if(newdistractor > 0){
       if(!questionChoices.includes(parseInt(newdistractor,10))){
         questionChoices.push(parseInt(newdistractor, 10));
