@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-let productBarcodes = [
+let barcodes = [
 "0016000275713",
 "0051000012517",
 "0011110001207",
@@ -39,8 +39,11 @@ class App extends Component {
       endGame: false,
       questionsAttempted: 0,
       quizLength: 2,
+      productBarcodes: barcodes,
     };
 
+    this.removeLastProduct = this.removeLastProduct.bind(this);
+    this.chooseRandomProduct = this.chooseRandomProduct.bind(this);
     this.resetQuiz = this.resetQuiz.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
     this.onChooseResponse = this.onChooseResponse.bind(this);
@@ -114,11 +117,30 @@ class App extends Component {
 
   nextQuestion(){
     //update/reset various state items
-    shuffle(productBarcodes);
+    const {productBarcodes} = this.state;
+    let shuffledBarcodes = shuffle(productBarcodes);
+    this.setState({productBarcodes: shuffledBarcodes});
     // let randomIdx = randomSelect(productBarcodes.length);
-    this.fetchProductData(productBarcodes[productBarcodes.length - 1]);
-    productBarcodes.pop();
-    this.setState({correctResponse: null});
+    let randomProduct = this.chooseRandomProduct();
+    this.fetchProductData(randomProduct);
+    this.removeLastProduct();
+  }
+
+  chooseRandomProduct(){
+    const {productBarcodes} = this.state;
+    let shuffledBarcodes = shuffle(productBarcodes);
+    this.setState({productBarcodes: shuffledBarcodes});
+    console.log(productBarcodes);
+    return productBarcodes[0]; 
+  }
+
+  removeLastProduct(){
+    const {productBarcodes} = this.state;
+    let lessBarcodes = productBarcodes;
+    lessBarcodes.splice(0,1);
+    this.setState({productBarcodes: lessBarcodes});  
+    console.log(productBarcodes);
+
   }
 
   possibleQuestionTypesGen(product){
@@ -160,8 +182,10 @@ class App extends Component {
   }
 
   componentDidMount(){
-    let randomIdx = randomSelect(productBarcodes.length);
-    this.fetchProductData(productBarcodes[randomIdx]);
+    const {productBarcodes} = this.state;
+    let randomProduct = this.chooseRandomProduct();
+    this.fetchProductData(randomProduct);
+    this.removeLastProduct();
   }
 
   render() {
