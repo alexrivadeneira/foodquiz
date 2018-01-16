@@ -22,8 +22,10 @@ let barcodes = [
 
 const URL_BASE = 'https://world.openfoodfacts.org/api/v0/product/';
 const URL_SUFF = '.json';
+const QUIZ_LENGTH = 2;
 
 class App extends Component {
+
 
   constructor(props){
     super(props);
@@ -38,7 +40,7 @@ class App extends Component {
       correctResponse: null,
       endGame: false,
       questionsAttempted: 0,
-      quizLength: 2,
+      quizLength: QUIZ_LENGTH,
       productBarcodes: barcodes,
     };
 
@@ -71,7 +73,16 @@ class App extends Component {
 
   resetQuiz(){
     console.log("Resetting");
+    this.setState({
+      productBarcodes: barcodes,
+      endGame: false,
+      score: 0,
+      correctResponse: null,
+      questionsAttempted: 0,
+    });
+    this.nextQuestion();
   }
+
 
   questionBuilder(data, type){
     // update this to throw errors in case data isn't here
@@ -184,25 +195,20 @@ class App extends Component {
   }
 
   componentDidMount(){
-    const {productBarcodes} = this.state;
     let randomProduct = this.chooseRandomProduct();
     this.fetchProductData(randomProduct);
     this.removeLastProduct();
   }
 
   render() {
-    const product = this.state.product;
-    const questionText = this.state.questionText;
-    const questionChoices = this.state.questionChoices;
-    const correctResponse = this.state.correctResponse;
-    const endGame = this.state.endGame;
+    const {product, questionText, questionChoices, correctResponse, endGame, score} = this.state;
 
     return (
       <div className="App">
         <div>
           { endGame &&
             <div className="endgame">
-              <h2>You got {correctResponse} out of 10 questions correct!</h2>
+              <h2>You got {score} out of 10 questions correct!</h2>
               <button
                 onClick = {() => this.resetQuiz()}
               >Retake the Quiz
