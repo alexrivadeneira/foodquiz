@@ -54,6 +54,8 @@ class App extends Component {
       questionTypes: [],
       score: 0,
       correctResponse: null,
+      endGame: false,
+      questionsAttempted: 0,
     };
 
     this.nextQuestion = this.nextQuestion.bind(this);
@@ -118,13 +120,14 @@ class App extends Component {
         questionAnswer = data.nutriments.sodium_value; 
         questionChoices = genDistractors(questionAnswer);        
         break;
+      default:
+      //
     }
 
-    let shuffledChoices = shuffle(questionChoices);
 
     this.setState({
       questionText: questionText,
-      questionAnswer: questionAnswer,
+      questionAnswer: parseInt(questionAnswer, 10),
       questionChoices: questionChoices, 
     })
       
@@ -170,6 +173,12 @@ class App extends Component {
         this.setState({correctResponse: 2});
         console.log(this.state.score);
       }
+      let questionsAttempted = this.state.questionsAttempted + 1;
+      this.setState({questionsAttempted: questionsAttempted});
+      if(this.state.questionsAttempted > 3){
+        this.setState({endGame: true});
+      }
+      console.log("ATTEMPT:", questionsAttempted);
     }
 
   }
@@ -187,13 +196,19 @@ class App extends Component {
     const questionText = this.state.questionText;
     const questionChoices = this.state.questionChoices;
     const correctResponse = this.state.correctResponse;
+    const questionsAttempted = this.state.questionsAttempted;
     const questionAnswer = this.state.questionAnswer;
+    const endGame = this.state.endGame;
 
     return (
       <div className="App">
-        <div className="score">
-          <h4>Current Score: {this.state.score}</h4>
-        </div>
+        { endGame &&
+          <div className="endgame">
+            <h2>You got {correctResponse} out of 10 questions correct!</h2>
+          </div>
+        }
+
+        
         <div>
           {product ? 
             <div className="product">
@@ -234,8 +249,7 @@ class App extends Component {
                   onClick={ ()=> this.nextQuestion() }
                 >Next</button> 
               </div>             
-            ) :
-            <p>Awaiting result</p>
+            ) : <p></p>
           }
         </div>
       </div>
@@ -265,17 +279,21 @@ function sodiumPercentage(g){
 
 function genDistractors(questionAnswer){
   let questionChoices = [];
-  questionChoices.push(questionAnswer);
+  questionChoices.push(parseInt(questionAnswer, 10));
   
   let val = [2,3,5,10,100];
   let modifier = ["add", "sub", "mult", "mult", "mult", "mult", "div", "div"];
 
   while(questionChoices.length < 4){
+
     let newdistractor = mod(questionAnswer, val[randomSelect(val.length - 1)], modifier[randomSelect(modifier.length - 1)]);
     console.log("NEWDIS", newdistractor);
-    if(!questionChoices.includes(newdistractor)){
-      questionChoices.push(newdistractor);  
+    if(newdistractor > 0){
+      if(!questionChoices.includes(parseInt(newdistractor,10))){
+        questionChoices.push(parseInt(newdistractor, 10));
+      }  
     }
+
   }
 
   return questionChoices;
@@ -290,6 +308,8 @@ function genDistractors(questionAnswer){
         return start * val;
       case "div":
         return Math.floor(parseFloat(start) / val);
+      default:
+        //
     }
   }
 
