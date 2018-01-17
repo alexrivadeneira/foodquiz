@@ -5,24 +5,24 @@ let barcodes = [
 "0016000275713",
 "0051000012517",
 "0011110001207",
-"0020735420959",
-"0076186000028",
-"0028400090896",
-"0070470003023",
-"0018894360155",
-"0048121277079",
-"0077330530057",
-"0688267043918",
-"0888109110109",
-"0037600110754",
-"0048500301029",
-"0039000081047",
-"0085239042311",
+// "0020735420959",
+// "0076186000028",
+// "0028400090896",
+// "0070470003023",
+// "0018894360155",
+// "0048121277079",
+// "0077330530057",
+// "0688267043918",
+// "0888109110109",
+// "0037600110754",
+// "0048500301029",
+// "0039000081047",
+// "0085239042311",
 ];
 
 const URL_BASE = 'https://world.openfoodfacts.org/api/v0/product/';
 const URL_SUFF = '.json';
-const QUIZ_LENGTH = 10;
+const QUIZ_LENGTH = 3;
 
 class App extends Component {
 
@@ -40,7 +40,7 @@ class App extends Component {
       endGame: false,
       questionsAttempted: 0,
       quizLength: QUIZ_LENGTH,
-      productBarcodes: barcodes,
+      productBarcodes: barcodes.slice(""),
     };
 
     this.removeLastProduct = this.removeLastProduct.bind(this);
@@ -73,12 +73,13 @@ class App extends Component {
   resetQuiz(){
     console.log("Resetting");
     this.setState({
-      productBarcodes: barcodes,
+      productBarcodes: barcodes.slice(""),
       endGame: false,
       score: 0,
       correctResponse: null,
       questionsAttempted: 0,
     });
+    console.log("reset barcodes in state: ", this.state.productBarcodes);
     this.nextQuestion();
   }
 
@@ -119,15 +120,18 @@ class App extends Component {
 
     this.setState({
       questionText: questionText,
-      questionChoices: questionChoices, 
+      questionChoices: shuffle(questionChoices), 
     })
       
   }
 
   nextQuestion(){
+    console.log("barcodes>>>", barcodes);
     //update/reset various state items
     const {productBarcodes} = this.state;
+    console.log("barcodes firatappear nextq", productBarcodes);
     let shuffledBarcodes = shuffle(productBarcodes);
+    console.log("after nextQ shuffle: ", productBarcodes);
     this.setState({productBarcodes: shuffledBarcodes});
     // let randomIdx = randomSelect(productBarcodes.length);
     let randomProduct = this.chooseRandomProduct();
@@ -150,7 +154,7 @@ class App extends Component {
     let lessBarcodes = productBarcodes;
     lessBarcodes.splice(0,1);
     this.setState({productBarcodes: lessBarcodes});  
-    console.log(productBarcodes);
+    console.log("after removal: ", productBarcodes);
 
   }
 
@@ -183,7 +187,7 @@ class App extends Component {
         console.log(this.state.score);
       }
       let questionsAttempted = this.state.questionsAttempted + 1;
-      if(questionsAttempted > this.state.quizLength){
+      if(questionsAttempted >= this.state.quizLength){
         this.setState({endGame: true});
       }
       this.setState({questionsAttempted: questionsAttempted});
@@ -199,14 +203,14 @@ class App extends Component {
   }
 
   render() {
-    const {product, questionText, questionChoices, correctResponse, endGame, score} = this.state;
+    const {product, questionText, questionChoices, correctResponse, endGame, score, quizLength} = this.state;
 
     return (
       <div className="App">
         <div>
           { endGame &&
             <div className="endgame">
-              <h2>You got {score} out of 10 questions correct!</h2>
+              <h2>You got {score} out of {quizLength} questions correct!</h2>
               <button
                 onClick = {() => this.resetQuiz()}
               >Retake the Quiz
@@ -263,7 +267,7 @@ class App extends Component {
         </div>
         }
         <div className="legal">
-        <p>The food products data and pictures come from the collaborative, free and open <a href="http://openfoodfacts.org/" target="_blank">Open Food Facts</a> database. The data is available under the licence Open Database License and the photos are licensed under the licence Creative Commons Attribution Share-Alike.</p>
+        <p>The food products data and pictures come from the collaborative, free and open <a href="http://openfoodfacts.org/" target="_blank"  rel="noopener noreferrer" >Open Food Facts</a> database. The data is available under the licence Open Database License and the photos are licensed under the licence Creative Commons Attribution Share-Alike.</p>
         </div>
       </div>
     );
