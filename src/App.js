@@ -5,24 +5,24 @@ let barcodes = [
 "0016000275713",
 "0051000012517",
 "0011110001207",
-// "0020735420959",
-// "0076186000028",
-// "0028400090896",
-// "0070470003023",
-// "0018894360155",
-// "0048121277079",
-// "0077330530057",
-// "0688267043918",
-// "0888109110109",
-// "0037600110754",
-// "0048500301029",
-// "0039000081047",
-// "0085239042311",
+"0020735420959",
+"0076186000028",
+"0028400090896",
+"0070470003023",
+"0018894360155",
+"0048121277079",
+"0077330530057",
+"0688267043918",
+"0888109110109",
+"0037600110754",
+"0048500301029",
+"0039000081047",
+"0085239042311",
 ];
 
 const URL_BASE = 'https://world.openfoodfacts.org/api/v0/product/';
 const URL_SUFF = '.json';
-const QUIZ_LENGTH = 3;
+const QUIZ_LENGTH = 10;
 
 class App extends Component {
 
@@ -71,16 +71,15 @@ class App extends Component {
   }
 
   resetQuiz(){
-    console.log("Resetting");
     this.setState({
-      productBarcodes: barcodes.slice(""),
+      productBarcodes: [...barcodes],
       endGame: false,
       score: 0,
       correctResponse: null,
       questionsAttempted: 0,
+    }, function(){
+      this.nextQuestion();
     });
-    console.log("reset barcodes in state: ", this.state.productBarcodes);
-    this.nextQuestion();
   }
 
   questionBuilder(data, type){
@@ -126,12 +125,9 @@ class App extends Component {
   }
 
   nextQuestion(){
-    console.log("barcodes>>>", barcodes);
     //update/reset various state items
     const {productBarcodes} = this.state;
-    console.log("barcodes firatappear nextq", productBarcodes);
     let shuffledBarcodes = shuffle(productBarcodes);
-    console.log("after nextQ shuffle: ", productBarcodes);
     this.setState({productBarcodes: shuffledBarcodes});
     // let randomIdx = randomSelect(productBarcodes.length);
     let randomProduct = this.chooseRandomProduct();
@@ -145,7 +141,6 @@ class App extends Component {
     const {productBarcodes} = this.state;
     let shuffledBarcodes = shuffle(productBarcodes);
     this.setState({productBarcodes: shuffledBarcodes});
-    console.log(productBarcodes);
     return productBarcodes[0]; 
   }
 
@@ -154,7 +149,6 @@ class App extends Component {
     let lessBarcodes = productBarcodes;
     lessBarcodes.splice(0,1);
     this.setState({productBarcodes: lessBarcodes});  
-    console.log("after removal: ", productBarcodes);
 
   }
 
@@ -177,22 +171,18 @@ class App extends Component {
   }
 
   onChooseResponse(choice){
-    console.log(choice, this.state.questionAnswer);
     if(!this.state.correctResponse && !this.state.endGame){
       if(choice === this.state.questionAnswer){
           this.setState({score: this.state.score + 1});
           this.setState({correctResponse: 1});
       } else {
         this.setState({correctResponse: 2});
-        console.log(this.state.score);
       }
       let questionsAttempted = this.state.questionsAttempted + 1;
       if(questionsAttempted >= this.state.quizLength){
         this.setState({endGame: true});
       }
       this.setState({questionsAttempted: questionsAttempted});
-
-      console.log("ATTEMPT:", questionsAttempted);
     }
   }
 
