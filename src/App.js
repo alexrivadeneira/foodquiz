@@ -286,7 +286,7 @@ function genDistractors(questionAnswer){
   questionChoices.push(parseInt(questionAnswer, 10));
   
   let val = [2,3,5,10,100];
-  let modifier = ["add", "sub", "mult", "mult", "mult", "mult", "div", "div"];
+  let modifier = ["mult", "mult", "mult", "mult", "div", "div"];
 
   while(questionChoices.length < 4){
 
@@ -301,6 +301,7 @@ function genDistractors(questionAnswer){
   return questionChoices;
 
   function mod(start, val, dir){
+    console.log(start, val, dir);
     switch(dir){
       case "add":
         return start + val;
@@ -314,6 +315,8 @@ function genDistractors(questionAnswer){
         //
     }
   }
+
+
   
 }
 export default App;
