@@ -296,12 +296,13 @@ function genDistractors(questionAnswer){
         questionChoices.push(parseInt(newdistractor, 10));
       }  
     }
-
+    
   }
+
   return questionChoices;
 
   function mod(start, val, dir){
-    console.log(start, val, dir);
+    // console.log(start, val, dir);
     switch(dir){
       case "add":
         return start + val;

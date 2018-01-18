@@ -79,3 +79,13 @@ button:hover{
 	display: inline-block;
 }
 
+.button-correct{
+	color: #fff;
+	background-color: #bada55;
+}
+
+.button-incorrect{
+	color: #fff;
+	background-color: red;
+}
+
