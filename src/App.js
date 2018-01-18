@@ -214,9 +214,9 @@ class App extends Component {
           <div>
             {product ? 
               <div className="product">
-                <h3>{product.product_name}</h3>
+                <h3 className="foodTitle shadow"><em>{product.product_name}</em></h3>
                 <img 
-                  className="productImg"
+                  className="productImg fancy-border"
                   src={product.image_small_url}
                   alt={product.product_name} 
                 />
@@ -226,16 +226,18 @@ class App extends Component {
           </div>
           <div className="questions">
               <p>{questionText}</p> 
-              {questionChoices.map(choice =>
-                <div key={choice}>
-                  <button 
-                    onClick={() => this.onChooseResponse(choice)}
-                    >{choice}
-                  </button>
-                </div>
-              )}
+              <div className="button-container">
+                {questionChoices.map(choice =>
+                  <div key={choice} className="button-container-inner">
+                    <button 
+                      onClick={() => this.onChooseResponse(choice)}
+                      >{choice}
+                    </button>
+                  </div>
+                )}
+              </div>
           </div>
-          <div className="feedback">
+          <div className="feedback fancy-border">
             { correctResponse ? 
               ( correctResponse === 1 ? 
                 <div>
