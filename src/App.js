@@ -199,7 +199,6 @@ class App extends Component {
 
   render() {
     const {revealed, product, questionText, questionChoices, correctResponse, endGame, score, quizLength, questionAnswer} = this.state;
-    console.log("questionAnswer",  questionAnswer);
     return (
       <div className="App">
       <h3 className="gameTitle shadow"><em>Nutrition Facts Quiz</em></h3>
