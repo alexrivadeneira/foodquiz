@@ -18,7 +18,7 @@ body {
 	padding: 15px;
 }
 
-.foodTitle{
+.gameTitle{
 	padding-top: 30px;
 	padding-bottom: 15px;
 	color: #eacb25;
@@ -26,6 +26,16 @@ body {
 	width: 60%;
 	margin: 0 auto;
 }
+
+.foodTitle{
+	padding-top: 30px;
+	padding-bottom: 15px;
+	color: #eacb25;
+	font-size: 35px;
+	width: 60%;
+	margin: 0 auto;
+}
+
 
 .shadow {
    text-shadow: 2px 2px 0px #000;

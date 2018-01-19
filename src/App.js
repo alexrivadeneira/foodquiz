@@ -202,6 +202,8 @@ class App extends Component {
     console.log("questionAnswer",  questionAnswer);
     return (
       <div className="App">
+      <h3 className="gameTitle shadow"><em>Nutrition Facts Quiz</em></h3>
+
         <div>
           { endGame &&
             <div className="endgame">
