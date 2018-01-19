@@ -41,6 +41,7 @@ class App extends Component {
       questionsAttempted: 0,
       quizLength: QUIZ_LENGTH,
       productBarcodes: barcodes.slice(""),
+      revealed: false,
     };
 
     this.removeLastProduct = this.removeLastProduct.bind(this);
@@ -77,6 +78,7 @@ class App extends Component {
       score: 0,
       correctResponse: null,
       questionsAttempted: 0,
+      revealed: false,
     }, function(){
       this.nextQuestion();
     });
@@ -128,7 +130,7 @@ class App extends Component {
     //update/reset various state items
     const {productBarcodes} = this.state;
     let shuffledBarcodes = shuffle(productBarcodes);
-    this.setState({productBarcodes: shuffledBarcodes});
+    this.setState({productBarcodes: shuffledBarcodes, revealed: false});
     // let randomIdx = randomSelect(productBarcodes.length);
     let randomProduct = this.chooseRandomProduct();
     this.fetchProductData(randomProduct);
@@ -175,8 +177,10 @@ class App extends Component {
       if(choice === this.state.questionAnswer){
           this.setState({score: this.state.score + 1});
           this.setState({correctResponse: 1});
+          this.setState({revealed: true});
       } else {
         this.setState({correctResponse: 2});
+        this.setState({revealed: true});
       }
       let questionsAttempted = this.state.questionsAttempted + 1;
       if(questionsAttempted >= this.state.quizLength){
@@ -193,7 +197,7 @@ class App extends Component {
   }
 
   render() {
-    const {product, questionText, questionChoices, correctResponse, endGame, score, quizLength, questionAnswer} = this.state;
+    const {revealed, product, questionText, questionChoices, correctResponse, endGame, score, quizLength, questionAnswer} = this.state;
     console.log("questionAnswer",  questionAnswer);
     return (
       <div className="App">
@@ -224,6 +228,8 @@ class App extends Component {
               : <p>Loading...</p>
             }
           </div>
+
+          {revealed ? 
           <div className="questions">
               <p>{questionText}</p> 
               <div className="button-container">
@@ -240,6 +246,23 @@ class App extends Component {
                 )}
               </div>
           </div>
+        :
+          <div className="questions">
+              <p>{questionText}</p> 
+              <div className="button-container">
+                {questionChoices.map(choice =>
+                  <div key={choice} 
+                    className={"button-container-inner"}
+                    >
+                    <button 
+                      onClick={() => this.onChooseResponse(choice)}
+                      >{choice}
+                    </button>
+                  </div>
+                )}
+              </div>
+          </div>        
+        }
           <div className="feedback fancy-border">
             { correctResponse ? 
               ( correctResponse === 1 ? 
