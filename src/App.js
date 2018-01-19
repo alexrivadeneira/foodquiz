@@ -216,7 +216,7 @@ class App extends Component {
               <div className="product">
                 <h3 className="foodTitle shadow"><em>{product.product_name}</em></h3>
                 <img 
-                  className="productImg fancy-border"
+                  className={"productImg fancy-border"}
                   src={product.image_small_url}
                   alt={product.product_name} 
                 />
@@ -229,7 +229,7 @@ class App extends Component {
               <div className="button-container">
                 {questionChoices.map(choice =>
                   <div key={choice} 
-                    className={"button-container-inner" }
+                    className={"button-container-inner"}
                     >
                     <button 
                       className= { (choice === questionAnswer ? ' button-correct' : 'button-fail')}

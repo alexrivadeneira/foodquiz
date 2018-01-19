@@ -20,6 +20,7 @@ body {
 
 .foodTitle{
 	padding-top: 30px;
+	padding-bottom: 15px;
 	color: #eacb25;
 	font-size: 45px;
 	width: 60%;
@@ -29,6 +30,11 @@ body {
 .shadow {
    text-shadow: 2px 2px 0px #000;
 }
+
+.box-shadow {
+   box-shadow: 2px 2px 0px #000;
+}
+
 
 button {
 padding: 15px 30px 15px 30px;
@@ -59,6 +65,7 @@ button:hover{
 .legal{
 	padding-top: 100px;
 	font-size: 10px;
+	color: #095853;
 	width: 50%;
 	margin: 0 auto;
 }
