@@ -18,6 +18,7 @@ let barcodes = [
 "0048500301029",
 "0039000081047",
 "0085239042311",
+
 ];
 
 const URL_BASE = 'https://world.openfoodfacts.org/api/v0/product/';
@@ -263,7 +264,7 @@ class App extends Component {
               </div>
           </div>        
         }
-          <div className="feedback fancy-border">
+          <div>
             { correctResponse ? 
               ( correctResponse === 1 ? 
                 <div>
@@ -274,7 +275,7 @@ class App extends Component {
                 </div>
                 :
                 <div>
-                  <p>WRONG</p>
+                  <p>Wrong answer!</p>
                   <button
                     onClick={ ()=> this.nextQuestion() }
                   >Next</button> 
