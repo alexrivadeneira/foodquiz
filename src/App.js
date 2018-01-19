@@ -193,8 +193,8 @@ class App extends Component {
   }
 
   render() {
-    const {product, questionText, questionChoices, correctResponse, endGame, score, quizLength} = this.state;
-
+    const {product, questionText, questionChoices, correctResponse, endGame, score, quizLength, questionAnswer} = this.state;
+    console.log("questionAnswer",  questionAnswer);
     return (
       <div className="App">
         <div>
@@ -228,8 +228,11 @@ class App extends Component {
               <p>{questionText}</p> 
               <div className="button-container">
                 {questionChoices.map(choice =>
-                  <div key={choice} className="button-container-inner">
+                  <div key={choice} 
+                    className={"button-container-inner" }
+                    >
                     <button 
+                      className= { (choice === questionAnswer ? ' button-correct' : 'button-fail')}
                       onClick={() => this.onChooseResponse(choice)}
                       >{choice}
                     </button>

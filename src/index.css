@@ -9,6 +9,7 @@ body {
 
 .productImg{
 	border-radius: 5px;
+	padding-bottom: 30px;
 
 }
 
@@ -56,8 +57,9 @@ button:hover{
 }
 
 .legal{
+	padding-top: 100px;
 	font-size: 10px;
-	width: 80%;
+	width: 50%;
 	margin: 0 auto;
 }
 
@@ -81,7 +83,8 @@ button:hover{
 
 .button-correct{
 	color: #fff;
-	background-color: #bada55;
+	font-weight: 600;
+	background-color: #00c500;
 }
 
 .button-incorrect{
