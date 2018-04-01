@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import Question from './components/Question.js';
 
 let barcodes = [
 "0016000275713",
@@ -202,6 +203,11 @@ class App extends Component {
     return (
       <div className="App">
       <h3 className="gameTitle shadow"><em>Nutrition Facts Quiz</em></h3>
+
+        <Question 
+          questionText={questionText} 
+          choices={questionChoices} 
+        />
 
         <div>
           { endGame &&
